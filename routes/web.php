@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::get('/register',\App\Livewire\Register::class);
+Route::get('/login',\App\Livewire\Login::class);
+
+Route::middleware(['isUser'])->group(function () {
+    Route::get('/dashboard',function () {dd(Auth::user());});
+});

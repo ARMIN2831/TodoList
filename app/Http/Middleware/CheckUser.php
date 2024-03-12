@@ -16,13 +16,7 @@ class CheckUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->bearerToken() and Auth::guard('sanctum')->user()) {
-            Auth::setUser(Auth::guard('sanctum')->user());
-        }else{
-            return response()->json([
-                'status'=>'failed',
-                'message'=>'UnAuthentication',
-            ],401);
-        }
+        if (Auth::check()) return $next($request);
+        else return redirect()->to('/register');
     }
 }
