@@ -22,5 +22,5 @@ Route::get('/register',\App\Livewire\Register::class);
 Route::get('/login',\App\Livewire\Login::class);
 
 Route::middleware(['isUser'])->group(function () {
-    Route::get('/dashboard',function () {dd(Auth::user());});
+    Route::get('/dashboard',\App\Livewire\Dashboard::class);
 });
