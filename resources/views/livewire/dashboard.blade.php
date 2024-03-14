@@ -108,7 +108,10 @@
                 if ($percent < 25) $color = 'yellow';
                 $w = 'w-['.$percent.'%]';
             @endphp
-            <div class="bg-gray-100 rounded-lg shadow-md p-6 mb-6">
+            <div class="relative bg-gray-100 rounded-lg shadow-md p-6 mb-6">
+                <button wire:click="backToProjects" class="absolute right-0 top-0 mt-4 mr-4 inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
+                    Back
+                </button>
                 <h2 class="text-xl font-bold mb-4 text-gray-800">Project Information</h2>
                 <div class="mb-4">
                     <p class="text-base text-gray-600"><span class="font-bold">Project Name:</span> {{$project->title}}
@@ -136,7 +139,7 @@
                         class="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105">
                         Add Task
                     </button>
-                    <button
+                    <button wire:click="deleteProject({{$project->id}})"
                         class="inline-flex items-center px-4 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105">
                         Delete Project
                     </button>
@@ -150,11 +153,16 @@
         @foreach($tasks as $task)
                 <div class="bg-white rounded-lg shadow-lg p-6 mb-10">
                     <div class="flex justify-between rounded-lg">
+
                         <h2 class="text-xl font-bold mb-4 text-gray-800">{{$task->title}}</h2>
                         <div>
                             <button wire:click="createModel('task' , {{$task->id}})" class="inline-flex items-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105">
                                 Add Subtask
                             </button>
+                            <button wire:click="deleteTask({{ $task->id }} , '1')" class="inline-flex items-center px-4 py-2 bg-red-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105">
+                                DELETE
+                            </button>
+
                         </div>
                     </div>
                     @foreach($task->sub as $sub)
@@ -165,23 +173,17 @@
                                 <span class="ml-2 text-gray-800 font-medium break-all">{{$sub->title}}</span>
                             </label>
                             <div class="min-w-48">
-                                <span class="min-w-24 text-xs text-gray-500 leading-6 m-1.5">Due: 2024-03-18</span>
-                                <button
+                                {{--<span class="min-w-24 text-xs text-gray-500 leading-6 m-1.5">Due: 2024-03-18</span>--}}
+                                <button wire:click="deleteTask({{ $sub->id }})"
                                     class="float-right p-1 rounded-full text-gray-800 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105 shadow-md mr-1.5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                         fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                              d="M14 5a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h8zm-1 9V7H7v7h6zm-4-3a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
-                                              clip-rule="evenodd"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M6.707 6.293a1 1 0 0 1 1.414-1.414L10 8.586l2.879-2.88a1 1 0 1 1 1.414 1.414L11.414 10l2.88 2.879a1 1 0 0 1-1.414 1.414L10 11.414l-2.879 2.88a1 1 0 0 1-1.414-1.414L8.586 10 5.707 7.121a1 1 0 0 1 0-1.414z" clip-rule="evenodd"/>
                                     </svg>
                                 </button>
                                 <button
                                     class="float-right p-1 rounded-full text-gray-800 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105 shadow-md mr-1.5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                         fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                              d="M14 5a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h8zm-1 9V7H7v7h6zm-4-3a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
-                                              clip-rule="evenodd"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M14 5a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h8zm-1 9V7H7v7h6zm-4-3a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" clip-rule="evenodd"/>
                                     </svg>
                                 </button>
                             </div>

@@ -37,6 +37,13 @@ class Dashboard extends Component
     {
         $this->reset('title','task_id','new');
     }
+    public function backToProjects()
+    {
+        $this->reset('show','new','title','status','task_id','project');
+    }
+
+
+
     public function storeProject()
     {
         $project = new Project();
@@ -57,6 +64,17 @@ class Dashboard extends Component
         }
         $this->tasks = Task::where('project_id',$this->show)->where('parent_id',0)->with('sub')->get();
     }
+    public function deleteProject($id)
+    {
+        foreach ($this->projects as $key => $project){
+            if ($project->id == $id){
+                unset($this->projects[$key]);
+                break;
+            }
+        }
+        Project::whereId($id)->delete();
+        $this->reset('show','project');
+    }
 
 
 
@@ -72,6 +90,19 @@ class Dashboard extends Component
         $task->save();
         if ($parent == 0) $this->tasks->push($task);
         $this->reset('title','new','status');
+    }
+    public function deleteTask($id,$p=0)
+    {
+        if ($p == 1){
+            foreach ($this->tasks as $key => $task) {
+                if ($task->id == $id){
+                    unset($this->tasks[$key]);
+                    Task::where('parent_id',$id)->delete();
+                    break;
+                }
+            }
+        }
+        Task::whereId($id)->delete();
     }
     public function changeStatus($id,$status)
     {
