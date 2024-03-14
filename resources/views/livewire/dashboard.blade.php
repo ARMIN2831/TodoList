@@ -1,12 +1,12 @@
 <div
-    class="min-h-screen bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 flex flex-col items-center justify-center">
+    class="min-h-screen bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 flex flex-col items-center justify-center">
     <div class="w-full max-w-screen-lg bg-white rounded-lg shadow-lg p-6 mx-auto my-10">
         <div class="mb-10">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center">
                     <div
                         class="w-24 h-24 flex items-center justify-center rounded-full overflow-hidden bg-gray-200 mr-4">
-                        <img src="profile.jpg" alt="" class="w-full h-full object-cover"
+                        <img src="" alt="" class="w-full h-full object-cover"
                              onerror="this.style.display='none'">
                     </div>
                     <div>
@@ -94,6 +94,7 @@
                         </div>
                     @endif
                 </div>
+
             </div>
         @else
 
@@ -166,21 +167,20 @@
                         </div>
                     </div>
                     @foreach($task->sub as $sub)
-
                         <div class="py-2.5 task-item mb-px transition-colors duration-100 hover:bg-gray-200 flex justify-between rounded-lg items-center">
                             <label class="flex items-center cursor-pointer ml-1.5">
                                 <input wire:click="changeStatus({{ $sub->id }}, {{ $sub->status }})" {{$sub->status == 1 ? 'checked' : ''}} type="checkbox" class="form-checkbox h-5 w-5 min-w-5 text-green-500 cursor-pointer">
                                 <span class="ml-2 text-gray-800 font-medium break-all">{{$sub->title}}</span>
                             </label>
                             <div class="min-w-48">
-                                {{--<span class="min-w-24 text-xs text-gray-500 leading-6 m-1.5">Due: 2024-03-18</span>--}}
+                                <span class="min-w-24 text-xs text-gray-500 leading-6 m-1.5">@if(isset($sub->user->username)) {{$sub->user->username}} @endif</span>
                                 <button wire:click="deleteTask({{ $sub->id }})"
                                     class="float-right p-1 rounded-full text-gray-800 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105 shadow-md mr-1.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M6.707 6.293a1 1 0 0 1 1.414-1.414L10 8.586l2.879-2.88a1 1 0 1 1 1.414 1.414L11.414 10l2.88 2.879a1 1 0 0 1-1.414 1.414L10 11.414l-2.879 2.88a1 1 0 0 1-1.414-1.414L8.586 10 5.707 7.121a1 1 0 0 1 0-1.414z" clip-rule="evenodd"/>
                                     </svg>
                                 </button>
-                                <button
+                                <button wire:click="assignUser({{$sub->id}})"
                                     class="float-right p-1 rounded-full text-gray-800 hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105 shadow-md mr-1.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M14 5a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h8zm-1 9V7H7v7h6zm-4-3a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" clip-rule="evenodd"/>
@@ -214,6 +214,32 @@
 
 
 
+
+        @if($assign != 0)
+            <div x-data='{
+    open: false,
+    options: @json($users),
+    search: "",
+    filteredOptions: function() {
+        return this.options.filter(option => option.toLowerCase().includes(this.search.toLowerCase()));
+    }
+}'>
+                <input type="text" x-model="search" x-on:click="open = true" placeholder="Search..." class="border rounded p-2">
+
+                <div x-show="open" x-on:click.away="open = false" style="position: relative;">
+                    <ul style="list-style: none; padding: 0; max-height: 200px; overflow-y: auto;" class="border rounded bg-white shadow">
+                        <template x-if="filteredOptions().length > 0">
+                            <template x-for="option in filteredOptions()" :key="option">
+                                <li wire:click="assignTask(option)" @click="open = false;" style="cursor: pointer; padding: 8px;" x-text="option"></li>
+                            </template>
+                        </template>
+                        <template x-if="filteredOptions().length === 0 && search !== ''">
+                            <li class="p-2">No results found.</li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+            @endif
 
 
             @if($new == 1 and $title == 'new task list')

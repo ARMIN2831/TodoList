@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -11,6 +12,7 @@ class Dashboard extends Component
 {
     public $projects;
     public $user;
+    public $users = [];
     public $tasks;
     public $show = 0;
     public $project;
@@ -21,6 +23,7 @@ class Dashboard extends Component
     public $title;
     public $status = 0;
     public $task_id = 0;
+    public $assign = 0;
 
     public function logout()
     {
@@ -62,7 +65,7 @@ class Dashboard extends Component
                 break;
             }
         }
-        $this->tasks = Task::where('project_id',$this->show)->where('parent_id',0)->with('sub')->get();
+        $this->tasks = Task::where('project_id',$this->show)->where('parent_id',0)->with('sub','user')->get();
     }
     public function deleteProject($id)
     {
@@ -115,6 +118,14 @@ class Dashboard extends Component
             }
         }
     }
+    public function assignUser($id){
+        $this->assign = $id;
+    }
+    public function assignTask($username){
+        $user = User::where('username',$username)->first();
+        Task::whereId($this->assign)->update(['user_id'=>$user->id]);
+        $this->reset('assign');
+    }
 
 
 
@@ -123,6 +134,9 @@ class Dashboard extends Component
     {
         $this->user = Auth::user();
         $this->projects = Project::where('user_id',$this->user->id)->get();
+        $users = User::all();
+        foreach ($users as $user)
+            $this->users[] = $user->username;
     }
     public function render()
     {
