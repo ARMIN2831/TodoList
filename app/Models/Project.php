@@ -13,6 +13,10 @@ class Project extends Model
     {
         return $this->hasMany(Task::class)->where('parent_id','!=',0);
     }
+    public function ParentTasks(): HasMany
+    {
+        return $this->hasMany(Task::class)->where('parent_id',0)->with('todo');
+    }
 
     public function calculateProgressPercentage(): float|int
     {
