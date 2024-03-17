@@ -25,6 +25,7 @@ class Dashboard extends Component
     public $status = 0;
     public $task_id = 0;
     public $assign = 0;
+    public $edit_id = 0;
 
     public function logout()
     {
@@ -47,6 +48,31 @@ class Dashboard extends Component
     public function backToProjects()
     {
         $this->reset('show', 'new', 'title', 'status', 'task_id', 'project','todo_id');
+    }
+    public function editModel($id,$title)
+    {
+        $this->edit_id = $id;
+        $this->title = $title;
+    }
+    public function updateModel($model)
+    {
+        if ($model == 'task') $db = new Task();
+        else if ($model == 'project') $db = new Project();
+        $db->where('id',$this->edit_id)->update(['title'=>$this->title]);
+        if ($model == 'project')$this->$model->title = $this->title;
+        else{
+            foreach ($this->tasks as $key => $task){
+                if ($task->id == $this->edit_id){
+                    $this->tasks[$key]->title = $this->title;
+                    break;
+                }
+            }
+        }
+        $this->reset('title','edit_id');
+    }
+    public function cancelAssign()
+    {
+        $this->reset('assign');
     }
 
 
