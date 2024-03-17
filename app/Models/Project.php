@@ -26,7 +26,7 @@ class Project extends Model
         $totalTasks = $tasks->count();
         $completedTasks = $tasks->where('status', 1)->count();
         if ($totalTasks == 0) $percent = 0;
-        else $percent = ($completedTasks / $totalTasks) * 100;
+        else $percent = round(($completedTasks / $totalTasks) * 100,2);
         return ['percent'=>$percent,'total'=>$totalTasks,'completed'=>$completedTasks];
     }
 
@@ -39,7 +39,7 @@ class Project extends Model
         $totalTasks = $tasks->count();
         $completedTasks = $tasks->where('status', 1)->count();
         if ($totalTasks == 0) $percent = 0;
-        else $percent = ($completedTasks / $totalTasks) * 100;
+        else $percent = round(($completedTasks / $totalTasks) * 100,2);
         return ['percent'=>$percent,'total'=>$totalTasks,'completed'=>$completedTasks];
     }
 }
